@@ -127,6 +127,6 @@ Then group and summarize by our newly created variable:
 |1 NON-SUP | 1274716|
 |2 SUP     | 180868|
 
-Using this approach, this equates to roughly 1 supervisor for every 7 employees.
+Using this approach, this equates to a ratio of .142 or roughly 1 supervisor for every 7 employees.
 
 ## I hope you enjoyed this brief look at U.S. Government Employee data, please see the analysis.R file for the complete code. Thanks!
