@@ -129,4 +129,4 @@ Then group and summarize by our newly created variable:
 
 Using this approach, this equates to a ratio of .142 or roughly 1 supervisor for every 7 employees.
 
-## I hope you enjoyed this brief look at U.S. Government Employee data, please see the analysis.R file for the complete code. Thanks!
+## I hope you enjoyed this brief look at U.S. Government Employee data, please see the analysis.R file for the complete code.
