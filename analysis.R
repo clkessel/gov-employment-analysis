@@ -2,48 +2,48 @@
 library(dplyr)
 library(stringr)
 library(ggplot2)
-library(scales) #used for displaying continuous numbers along axis in plot
-#read data into data frame
-getwd()
-setwd("/home/claptop/Documents/Data Science/GitHubProjects/gov-employment-analysis/data")
+library(scales)
+
+setwd(paste(getwd(),"/data",sep=""))
+
 #read data 
 emp_data <- read.csv('FACTDATA_SEP2022.TXT')
-
+ 
 #explore data by PPGRD first before filtering
 str(emp_data)
 head(emp_data)
+
 emp_data %>% select(PPGRD) %>% unique()
 emp_data %>% select(PPGRD) %>% unique() %>% count()
+emp_data %>% filter(str_detect(PPGRD,'GS')) %>% count()
 
 #filter data by GS scale positions and re-examine
 gs_emp_data <- emp_data %>% filter(str_detect(PPGRD,'GS'))
-str(gs_emp_data)
-head(gs_emp_data)
-gs_emp_data %>% select(PPGRD) %>% unique()
-gs_emp_data %>% select(PPGRD) %>% unique() %>% count()
 
-#simple summary statistics
-paste('Average GS salary in September 2022: ', mean(gs_emp_data$SALARY, na.rm=TRUE))
+#For question 1: How many General Schedule (GS) government employees are there?
+gs_emp_data %>% count()
+
+#For question 2: What are the mean & median salaries of GS employees by grade?
+paste('Mean GS salary in September 2022: ', mean(gs_emp_data$SALARY, na.rm=TRUE))
 paste('Median GS salary in September 2022: ', median(gs_emp_data$SALARY, na.rm=TRUE))
 paste('Total GS Civilians: ', nrow(gs_emp_data))
+#mean & median for each pay grade
+gs_emp_data %>% group_by(PPGRD) %>% summarize(mean=mean(SALARY, na.rm=TRUE), median=median(SALARY, na.rm=TRUE))
 
+#For question 3: What is the distribution of GS employees by grade?
 #barplot of GS grades and their counts
-gs_emp_data %>% group_by(PPGRD) %>% summarize(total=n()) %>% ggplot(aes(x=reorder(PPGRD,total), total)) + geom_col() + scale_y_continuous(labels = comma)
+library(ggthemes)
+gs_emp_data %>% group_by(PPGRD) %>% summarize(total=n()) %>% ggplot(aes(x=reorder(PPGRD,total), total)) + geom_col() + scale_y_continuous(labels = comma) + xlab("GS Pay Grades") + ylab("Total") +
+  ggtitle("Distribution of GS pay grades Sep 2022") + theme_economist()
 
-#look at supervisor status
-#7 different supervisor statuses...only 3 of which are designated 'Supervisor' or 'Leader'
-#first, create variable to indicate sup or non-sup since there are multiple status that do this
+#For question 4: What is the ratio of supervisor to non-supervisor employees?
 gs_emp_data <- gs_emp_data %>% mutate(SUPSTATS = case_when(SUPERVIS == 4 | SUPERVIS == 5 | SUPERVIS == 8 | SUPERVIS == '*' ~ 'NON-SUP', SUPERVIS == 2 | SUPERVIS == 6 | SUPERVIS == 7  ~ 'SUP'))
 #group & count sup & non-sup status
 gs_emp_data %>% group_by(SUPSTATS) %>% summarize(total = n())
 #provide ratio
 num_gs_sup <- gs_emp_data %>% group_by(SUPSTATS) %>% summarize(total = n()) %>% filter(SUPSTATS == 'SUP') %>% select(total)
 num_gs_nonsup <- gs_emp_data %>% group_by(SUPSTATS) %>% summarize(total = n()) %>% filter(SUPSTATS == 'NON-SUP') %>% select(total)
+num_gs_sup/num_gs_nonsup
 1/(num_gs_sup/num_gs_nonsup)
 
 
-#per job type
-#count gs per state
-
-
- 
